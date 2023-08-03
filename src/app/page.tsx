@@ -11,7 +11,6 @@ export interface Book {
   year: number
   ISBN: string
 }
-console.log('🚀 ~ file: page.tsx:3 ~ data:', data)
 const books: Book[] = data.library.map((data) => data.book)
 
 const genres: string[] = Array.from(new Set(books.map((book) => book.genre)))

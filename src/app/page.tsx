@@ -1,5 +1,5 @@
 'use client'
-import { useState } from 'react'
+import { useMemo, useState } from 'react'
 import data from '../books.json'
 
 export interface Book {
@@ -17,13 +17,14 @@ const genres: string[] = Array.from(new Set(books.map((book) => book.genre)))
 
 export default function Home () {
   const [genre, setGenre] = useState<string>('')
-  const matches = genre !== ''
-    ? books.filter((book) => {
+  const matches = useMemo(() => {
+    if (genre === '') return books
+    return books.filter((book) => {
       if (book.genre !== genre) return false
 
       return true
     })
-    : books
+  }, [genre])
   return (
     <section className='grid gap-4'>
       <nav>

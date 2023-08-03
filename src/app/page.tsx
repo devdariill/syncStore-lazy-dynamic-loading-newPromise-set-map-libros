@@ -14,6 +14,8 @@ export interface Book {
 console.log('🚀 ~ file: page.tsx:3 ~ data:', data)
 const books: Book[] = data.library.map((data) => data.book)
 
+const genres: string[] = Array.from(new Set(books.map((book) => book.genre)))
+
 export default function Home () {
   const [genre, setGenre] = useState<string>('')
   const matches = genre !== ''
@@ -28,8 +30,9 @@ export default function Home () {
       <nav>
         <select onChange={(e) => setGenre(e.target.value)}>
           <option value="">Todos</option>
-          <option value="Fantasía">Fantasía</option>
-          <option value="Ciencia ficción">Ciencia ficción</option>
+          {genres.map((genre) => (
+            <option key={genre} value={genre}>{genre}</option>
+          ))}
         </select>
       </nav>
       <ul className='grid grid-cols-[repeat(auto-fill,minmax(230px,1fr))] gap-4'>

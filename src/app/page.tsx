@@ -1,9 +1,9 @@
 import { Book } from '@/types'
-import dynamic from 'next/dynamic'
-import { Suspense } from 'react'
+import { Suspense, lazy } from 'react'
 import IndexLoading from './loading'
 
-const IndexClienPage = dynamic(async () => await import('./client'), { ssr: false, suspense: true }) // ssr: execute in prerender server side
+const IndexClienPage = lazy(async () => await import('./client')) // ssr: execute in prerender server side
+// const IndexClienPage = dynamic(async () => await import('./client'), { ssr: false, suspense: true }) // ssr: execute in prerender server side
 
 const api = {
   books: {

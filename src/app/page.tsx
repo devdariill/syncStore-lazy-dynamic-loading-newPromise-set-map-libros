@@ -1,5 +1,7 @@
 import { Book } from '@/types'
-import IndexClienPage from './client'
+import dynamic from 'next/dynamic'
+
+const IndexClienPage = dynamic(async () => await import('./client'), { ssr: false }) // ssr: execute in prerender server side
 
 const api = {
   books: {

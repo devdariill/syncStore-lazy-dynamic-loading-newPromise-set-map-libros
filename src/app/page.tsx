@@ -1,7 +1,9 @@
 import { Book } from '@/types'
 import dynamic from 'next/dynamic'
+import { Suspense } from 'react'
+import IndexLoading from './loading'
 
-const IndexClienPage = dynamic(async () => await import('./client'), { ssr: false }) // ssr: execute in prerender server side
+const IndexClienPage = dynamic(async () => await import('./client'), { ssr: false, suspense: true }) // ssr: execute in prerender server side
 
 const api = {
   books: {
@@ -9,7 +11,7 @@ const api = {
       return await new Promise((resolve) => {
         setTimeout(() => {
           resolve(import('../books.json').then((data) => data.library.map((data) => data.book)))
-        }, 3000)
+        }, 1000)
       })
     }
   }
@@ -21,7 +23,9 @@ async function page () {
   const genres: string[] = Array.from(new Set(books.map((book) => book.genre)))
 
   return (
-   <IndexClienPage books={books} genres={genres}/>
+    <Suspense fallback={<IndexLoading/>}>
+      <IndexClienPage books={books} genres={genres}/>
+    </Suspense>
   )
 }
 

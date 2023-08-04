@@ -15,7 +15,7 @@ export default function RootLayout (
   return (
     <html lang="es">
       <body className={inter.className}>
-        <main className='grid min-h-screen grid-rows-[60px,1fr,60px] px-4 max-w-screen-lg'>
+        <main className='grid min-h-screen grid-rows-[60px,1fr,60px] px-4 max-w-screen-lg mx-auto'>
           <nav className='flex items-center text-2xl'>Miudlibritos</nav>
           <section>{children}</section>
           <footer className='flex items-center justify-center'>Goncy</footer>

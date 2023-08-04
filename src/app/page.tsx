@@ -11,7 +11,7 @@ const api = {
       return await new Promise((resolve) => {
         setTimeout(() => {
           resolve(import('../books.json').then((data) => data.library.map((data) => data.book)))
-        }, 1000)
+        }, 100)
       })
     }
   }

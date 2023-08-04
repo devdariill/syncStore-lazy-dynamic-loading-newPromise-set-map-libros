@@ -25,6 +25,12 @@ export default function Home () {
       return true
     })
   }, [genre])
+  const [readList, setReadList] = useState<Array<Book['ISBN']>>([])
+  const handleBookClick = (book: Book['ISBN']) => {
+    setReadList(readList => readList.includes(book)
+      ? readList.filter((item) => item !== book)
+      : [...readList, book])
+  }
   return (
     <section className='grid gap-4'>
       <nav>
@@ -37,7 +43,7 @@ export default function Home () {
       </nav>
       <ul className='grid grid-cols-[repeat(auto-fill,minmax(230px,1fr))] gap-4'>
         {matches.map((book) => (
-          <li key={book.ISBN}>
+          <li key={book.ISBN} onClick={() => handleBookClick(book.ISBN)}>
             <img src={book.cover} alt={book.title} className='aspect-[9/14] object-cover'/>
             <p>{book.title}</p>
           </li>

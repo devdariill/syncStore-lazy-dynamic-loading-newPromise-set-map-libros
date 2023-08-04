@@ -1,9 +1,9 @@
 import { Book } from '@/types'
-import { Suspense, lazy } from 'react'
+import dynamic from 'next/dynamic'
 import IndexLoading from './loading'
 
-const IndexClienPage = lazy(async () => await import('./client')) // ssr: execute in prerender server side
-// const IndexClienPage = dynamic(async () => await import('./client'), { ssr: false, suspense: true }) // ssr: execute in prerender server side
+// const IndexClienPage = lazy(async () => await import('./client'))
+const IndexClienPage = dynamic(async () => await import('./client'), { ssr: false, loading: IndexLoading }) // ssr: execute in prerender server side
 
 const api = {
   books: {
@@ -23,9 +23,9 @@ async function page () {
   const genres: string[] = Array.from(new Set(books.map((book) => book.genre)))
 
   return (
-    <Suspense fallback={<IndexLoading/>}>
+  // <Suspense fallback={<IndexLoading/>}>
       <IndexClienPage books={books} genres={genres}/>
-    </Suspense>
+  // </Suspense>
   )
 }
 

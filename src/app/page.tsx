@@ -25,11 +25,14 @@ export default function Home () {
       return true
     })
   }, [genre])
-  const [readList, setReadList] = useState<Array<Book['ISBN']>>([])
+  const [readList, setReadList] = useState<Set<Book['ISBN']>>(() => new Set())
   const handleBookClick = (book: Book['ISBN']) => {
-    setReadList(readList => readList.includes(book)
-      ? readList.filter((item) => item !== book)
-      : [...readList, book])
+    const draft = structuredClone(readList)
+    draft.has(book) ? draft.delete(book) : draft.add(book)
+    setReadList(draft)
+    // setReadList(readList => readList.includes(book)
+    //   ? readList.filter((item) => item !== book)
+    //   : [...readList, book])
   }
   return (
     <section className='grid gap-4'>
@@ -45,7 +48,7 @@ export default function Home () {
         {matches.map((book) => (
           <li key={book.ISBN} onClick={() => handleBookClick(book.ISBN)}>
             <img src={book.cover} alt={book.title} className='aspect-[9/14] object-cover'/>
-            <p>{book.title}</p>
+            <p>{readList.has(book.ISBN) && (<span>❤️</span>)}{book.title}</p>
           </li>
         ))}
       </ul>

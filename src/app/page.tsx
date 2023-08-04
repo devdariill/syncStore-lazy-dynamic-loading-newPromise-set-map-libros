@@ -1,5 +1,5 @@
 'use client'
-import { useMemo, useState } from 'react'
+import { useEffect, useMemo, useState } from 'react'
 import data from '../books.json'
 
 export interface Book {
@@ -30,10 +30,17 @@ export default function Home () {
     const draft = structuredClone(readList)
     draft.has(book) ? draft.delete(book) : draft.add(book)
     setReadList(draft)
+    localStorage.setItem('readList', JSON.stringify(Array.from(draft)))
     // setReadList(readList => readList.includes(book)
     //   ? readList.filter((item) => item !== book)
     //   : [...readList, book])
   }
+
+  useEffect(() => {
+    setReadList(new Set(JSON.parse(localStorage.getItem('readList') ?? '[]')))
+    // setReadList(JSON.parse(localStorage.getItem('readList') ?? '[]'))  as Array<Book['ISBN']>
+  }, [])
+
   return (
     <section className='grid gap-4'>
       <nav>

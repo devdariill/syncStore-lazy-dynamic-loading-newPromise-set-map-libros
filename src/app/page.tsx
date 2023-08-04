@@ -30,28 +30,38 @@ export default function Home () {
     const draft = structuredClone(readList)
     draft.has(book) ? draft.delete(book) : draft.add(book)
     setReadList(draft)
-    localStorage.setItem('readList', JSON.stringify(Array.from(draft)))
+    api.readList.update(draft)
     // setReadList(readList => readList.includes(book)
     //   ? readList.filter((item) => item !== book)
     //   : [...readList, book])
   }
-  const onReadListChange = (callback: (readList: Set<Book['ISBN']>) => void) => {
-    const getReadList = () => {
-      const readList = new Set(JSON.parse(localStorage.getItem('readList') ?? '[]') as Set<Book['ISBN']>) // 1 get data
-      // 1 return new Set(JSON.parse(localStorage.getItem('readList') ?? '[]') as Set<Book['ISBN']>)
-      callback(readList) // 2 return to callback
+
+  const api = {
+    readList: {
+      update: (readList: Set<Book['ISBN']>) =>
+        localStorage.setItem('readList', JSON.stringify(Array.from(readList))),
+      // localStorage.setItem('readList', JSON.stringify(Array.from(readList))),
+
+      onChange: (callback: (readList: Set<Book['ISBN']>) => void) => {
+        const getReadList = () => {
+          const readList = new Set(JSON.parse(localStorage.getItem('readList') ?? '[]') as Set<Book['ISBN']>) // 1 get data
+          // 1 return new Set(JSON.parse(localStorage.getItem('readList') ?? '[]') as Set<Book['ISBN']>)
+          callback(readList) // 2 return to callback
+        }
+        // 1 const readList = getReadList()
+        // 1 callback(readList)
+        window.addEventListener('storage', getReadList) // 3 listen to storage
+        getReadList() // 4 get data
+        return () => window.removeEventListener('storage', getReadList) // 5 unsuscribe
+        // 1 window.addEventListener('storage', (e) => {
+        // 1   if (e.key === 'readList') callback(getReadList())
+        // 1 })
+      }
     }
-    // 1 const readList = getReadList()
-    // 1 callback(readList)
-    window.addEventListener('storage', getReadList) // 3 listen to storage
-    getReadList() // 4 get data
-    return () => window.removeEventListener('storage', getReadList) // 5 unsuscribe
-    // 1 window.addEventListener('storage', (e) => {
-    // 1   if (e.key === 'readList') callback(getReadList())
-    // 1 })
   }
+
   useEffect(() => {
-    const unsuscribe = onReadListChange(setReadList)
+    const unsuscribe = api.readList.onChange(setReadList)
     return () => unsuscribe()
     // setReadList(new Set(JSON.parse(localStorage.getItem('readList') ?? '[]')))
     // setReadList(JSON.parse(localStorage.getItem('readList') ?? '[]'))  as Array<Book['ISBN']>

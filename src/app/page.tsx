@@ -35,9 +35,25 @@ export default function Home () {
     //   ? readList.filter((item) => item !== book)
     //   : [...readList, book])
   }
-
+  const onReadListChange = (callback: (readList: Set<Book['ISBN']>) => void) => {
+    const getReadList = () => {
+      const readList = new Set(JSON.parse(localStorage.getItem('readList') ?? '[]') as Set<Book['ISBN']>) // 1 get data
+      // 1 return new Set(JSON.parse(localStorage.getItem('readList') ?? '[]') as Set<Book['ISBN']>)
+      callback(readList) // 2 return to callback
+    }
+    // 1 const readList = getReadList()
+    // 1 callback(readList)
+    window.addEventListener('storage', getReadList) // 3 listen to storage
+    getReadList() // 4 get data
+    return () => window.removeEventListener('storage', getReadList) // 5 unsuscribe
+    // 1 window.addEventListener('storage', (e) => {
+    // 1   if (e.key === 'readList') callback(getReadList())
+    // 1 })
+  }
   useEffect(() => {
-    setReadList(new Set(JSON.parse(localStorage.getItem('readList') ?? '[]')))
+    const unsuscribe = onReadListChange(setReadList)
+    return () => unsuscribe()
+    // setReadList(new Set(JSON.parse(localStorage.getItem('readList') ?? '[]')))
     // setReadList(JSON.parse(localStorage.getItem('readList') ?? '[]'))  as Array<Book['ISBN']>
   }, [])
 
